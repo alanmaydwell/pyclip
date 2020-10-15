@@ -85,8 +85,9 @@ def counterstring(target_length=64, marker="*"):
         # Increase the counting number (+ 1 on end for marker)
         counting_no = len(result) + cn_len + 1
         # Need to cope with counting number gaining more digits
-        if len(str(counting_no)) > cn_len:
-            counting_no += 1
+        counting_no += len(str(counting_no)) > cn_len
+        #if len(str(counting_no)) > cn_len:
+        #    counting_no += 1
         result = result + str(counting_no) + marker
     result = result[:target_length]
     return result
@@ -104,6 +105,16 @@ def nowf():
     """Return Unix time with fractional seconds"""
     return time.time()
 
+def nowl():
+    """Return Unix time in seconds but with digits replaced with letters"""
+    return dig_to_letter(now())
+    
+def dig_to_letter(numbers):
+    """Convert digits 0 to 9 to letters A to I"""
+    numbers = str(numbers)
+    letters = [chr(65+int(n)) for n in numbers]
+    return "".join(letters)
+
 def asn():
     "Make an ASN based on Unix time with a valid check digit."""
     start = "1234AA"
@@ -116,7 +127,7 @@ def add_brackets(text):
     return modified text. Purpose is to enable certain functions to be
     called using eval without having to add () to the function name."""
     items = text.split(" ")
-    function_names = ("asn", "now", "nowf", "help")
+    function_names = ("asn", "now", "nowf", "nowl", "help")
     new_items = [item + "()" if item in function_names else item for item in items]
     return " ".join(new_items)
 
